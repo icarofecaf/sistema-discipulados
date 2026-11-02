@@ -1,0 +1,292 @@
+
+/* ESTRUTURA */
+
+.visitas-page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: #24344d;
+}
+
+/* CABEÇALHO */
+
+.visitas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.visitas-header h2 {
+  color: #142b49;
+  font-size: 23px;
+  font-weight: 650;
+  margin: 0 0 6px;
+}
+
+.visitas-header p {
+  color: #718096;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* INDICADORES */
+
+.visitas-resumo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.visitas-resumo > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 21px 24px;
+  box-shadow: 0 2px 8px rgba(20, 43, 73, 0.035);
+}
+
+.visitas-resumo span {
+  color: #718096;
+  font-size: 12px;
+}
+
+.visitas-resumo strong {
+  color: #142b49;
+  font-size: 27px;
+  font-weight: 700;
+}
+
+/* CARDS */
+
+.visitas-form-card,
+.visitas-historico-card {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(20, 43, 73, 0.035);
+}
+
+.visitas-card-header {
+  margin-bottom: 22px;
+}
+
+.visitas-card-header h3 {
+  color: #142b49;
+  font-size: 16px;
+  font-weight: 650;
+  margin: 0 0 6px;
+}
+
+.visitas-card-header p {
+  color: #718096;
+  font-size: 12px;
+  margin: 0;
+}
+
+/* FORMULÁRIO */
+
+.visitas-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.visitas-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.visitas-campo label {
+  color: #34445c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.visitas-campo input,
+.visitas-campo select,
+.visitas-campo textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #d5deea;
+  border-radius: 8px;
+  background: #fff;
+  color: #26364d;
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.visitas-campo input:focus,
+.visitas-campo select:focus,
+.visitas-campo textarea:focus {
+  border-color: #315b86;
+  box-shadow: 0 0 0 3px rgba(49, 91, 134, 0.08);
+}
+
+.visitas-campo textarea {
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.5;
+}
+
+.visitas-campo:nth-child(4) {
+  grid-column: 1 / -1;
+}
+
+.visitas-form-acoes {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+/* BOTÃO REGISTRAR */
+
+.btn-registrar-visita {
+  border: none;
+  border-radius: 8px;
+  padding: 11px 19px;
+  background: #142b49;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-registrar-visita:hover {
+  background: #203f65;
+}
+
+.btn-registrar-visita:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* MENSAGENS */
+
+.visitas-mensagem {
+  color: #718096;
+  font-size: 13px;
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.visitas-erro,
+.visitas-sucesso {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
+
+.visitas-erro {
+  color: #b42318;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+}
+
+.visitas-sucesso {
+  color: #087443;
+  background: #ecfdf3;
+  border: 1px solid #abefc6;
+}
+
+/* HISTÓRICO */
+
+.visitas-tabela-responsiva {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.visitas-tabela {
+  width: 100%;
+  min-width: 750px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.visitas-tabela th {
+  background: #f5f7fa;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 650;
+  text-align: left;
+  padding: 15px 14px;
+  white-space: nowrap;
+}
+
+.visitas-tabela th:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.visitas-tabela th:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.visitas-tabela td {
+  color: #34445c;
+  font-size: 12px;
+  padding: 16px 14px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.visitas-tabela tbody tr:hover {
+  background: #fafbfd;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1000px) {
+  .visitas-form-card,
+  .visitas-historico-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 700px) {
+  .visitas-resumo {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .visitas-resumo > div {
+    padding: 17px;
+  }
+
+  .visitas-form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .visitas-campo:nth-child(4),
+  .visitas-form-acoes {
+    grid-column: auto;
+  }
+
+  .visitas-form-card,
+  .visitas-historico-card {
+    padding: 17px;
+  }
+
+  .visitas-form-acoes {
+    margin-top: 5px;
+  }
+
+  .btn-registrar-visita {
+    width: 100%;
+  }
+}

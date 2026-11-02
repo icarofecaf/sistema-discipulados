@@ -1,0 +1,367 @@
+
+.discipulados-page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: #24344d;
+}
+
+.discipulados-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.discipulados-header h2 {
+  color: #142b49;
+  font-size: 23px;
+  font-weight: 650;
+  margin: 0 0 6px;
+}
+
+.discipulados-header p {
+  color: #718096;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* INDICADORES */
+
+.discipulados-indicators {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.discipulado-indicator {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 21px 24px;
+  box-shadow: 0 2px 8px rgba(20, 43, 73, 0.035);
+}
+
+.discipulado-indicator span {
+  color: #718096;
+  font-size: 12px;
+}
+
+.discipulado-indicator strong {
+  color: #142b49;
+  font-size: 27px;
+  font-weight: 700;
+}
+
+/* LISTA */
+
+.discipulados-list-card {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(20, 43, 73, 0.035);
+}
+
+.discipulados-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.discipulados-list-header h3 {
+  color: #142b49;
+  font-size: 16px;
+  font-weight: 650;
+  margin: 0;
+}
+
+.discipulados-filters {
+  display: flex;
+  gap: 10px;
+}
+
+.discipulados-filters input,
+.discipulados-filters select {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d5deea;
+  border-radius: 8px;
+  color: #24344d;
+  background: #fff;
+  outline: none;
+  font-size: 12px;
+}
+
+.discipulados-filters input {
+  width: 270px;
+}
+
+.discipulados-filters input:focus,
+.discipulados-filters select:focus {
+  border-color: #315b86;
+  box-shadow: 0 0 0 3px rgba(49, 91, 134, 0.08);
+}
+
+/* TABELA */
+
+.discipulados-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.discipulados-table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.discipulados-table th {
+  background: #f5f7fa;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 650;
+  text-align: left;
+  padding: 15px 14px;
+  white-space: nowrap;
+}
+
+.discipulados-table th:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.discipulados-table th:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.discipulados-table td {
+  color: #34445a;
+  font-size: 12px;
+  padding: 16px 14px;
+  border-bottom: 1px solid #edf0f4;
+  white-space: nowrap;
+}
+
+.discipulados-table tbody tr:hover {
+  background: #fafbfd;
+}
+
+.discipulados-table td strong {
+  color: #142b49;
+  font-weight: 650;
+}
+
+/* STATUS */
+
+.discipulado-status {
+  display: inline-block;
+  padding: 6px 11px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.status-ativo {
+  background: #e3f4eb;
+  color: #00845a;
+}
+
+.status-encerrado {
+  background: #fce8e8;
+  color: #c0392b;
+}
+
+/* BOTÃO TRANSFERIR */
+
+.btn-transferir {
+  padding: 8px 13px;
+  border: none;
+  border-radius: 7px;
+  background: #142b49;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-transferir:hover {
+  background: #203f65;
+}
+
+/* MENSAGENS */
+
+.discipulados-message {
+  color: #718096;
+  text-align: center;
+  padding: 35px 10px;
+  font-size: 13px;
+}
+
+.discipulados-error {
+  color: #c0392b;
+  background: #fce8e8;
+  border-radius: 8px;
+  padding: 15px;
+  font-size: 13px;
+}
+
+.discipulados-error button {
+  display: block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #142b49;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* MODAL DE TRANSFERÊNCIA */
+
+.transferencia-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.transferencia-modal {
+  width: 100%;
+  max-width: 450px;
+  padding: 28px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.transferencia-modal h3 {
+  margin: 0 0 20px;
+  color: #142b49;
+  font-size: 20px;
+}
+
+.transferencia-modal p {
+  margin-bottom: 12px;
+  color: #718096;
+  font-size: 13px;
+}
+
+.transferencia-modal label {
+  display: block;
+  margin: 20px 0 8px;
+  color: #142b49;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.transferencia-modal select {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d5deea;
+  border-radius: 8px;
+  background: #fff;
+  color: #142b49;
+}
+
+.transferencia-mensagem {
+  margin-top: 15px;
+  color: #c0392b !important;
+}
+
+.transferencia-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.transferencia-acoes button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.transferencia-acoes button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-cancelar {
+  background: #edf1f5;
+  color: #142b49;
+}
+
+.btn-confirmar-transferencia {
+  background: #142b49;
+  color: #fff;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1000px) {
+  .discipulados-list-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .discipulados-filters {
+    width: 100%;
+  }
+
+  .discipulados-filters input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .discipulados-indicators {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .discipulado-indicator {
+    padding: 17px;
+  }
+
+  .discipulados-list-card {
+    padding: 16px;
+  }
+
+  .discipulados-filters {
+    flex-direction: column;
+  }
+
+  .discipulados-filters input,
+  .discipulados-filters select {
+    width: 100%;
+  }
+
+  .transferencia-modal {
+    padding: 20px;
+  }
+
+  .transferencia-acoes {
+    flex-direction: column-reverse;
+  }
+
+  .transferencia-acoes button {
+    width: 100%;
+  }
+}
