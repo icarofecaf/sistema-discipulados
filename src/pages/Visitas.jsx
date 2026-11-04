@@ -23,6 +23,7 @@ function Visitas() {
   const formularioInicial = {
     discipulado_id: '',
     data_visita: obterDataAtual(),
+    horario_visita: '',
     local: '',
     observacoes: '',
   }
@@ -59,6 +60,7 @@ function Visitas() {
       .select(`
         id,
         data_visita,
+        horario_visita,
         local,
         observacoes,
         discipulados (
@@ -71,6 +73,10 @@ function Visitas() {
         )
       `)
       .order('data_visita', { ascending: false })
+      .order('horario_visita', {
+        ascending: false,
+        nullsFirst: false,
+      })
 
     if (visitasError) {
       console.error('Erro ao carregar visitas:', visitasError)
@@ -108,6 +114,13 @@ function Visitas() {
     return `${dia}/${mes}/${ano}`
   }
 
+  // FORMATAR HORÁRIO
+  function formatarHorario(horario) {
+    if (!horario) return '-'
+
+    return horario.slice(0, 5)
+  }
+
   // SALVAR VISITA
   async function salvarVisita(e) {
     e.preventDefault()
@@ -119,6 +132,7 @@ function Visitas() {
     const dados = {
       discipulado_id: formulario.discipulado_id,
       data_visita: formulario.data_visita,
+      horario_visita: formulario.horario_visita,
       local: formulario.local.trim() || null,
       observacoes: formulario.observacoes.trim() || null,
     }
@@ -129,7 +143,9 @@ function Visitas() {
 
     if (error) {
       console.error('Erro ao registrar visita:', error)
-      setErro('Não foi possível registrar a visita. Verifique as permissões e tente novamente.')
+      setErro(
+        'Não foi possível registrar a visita. Verifique as permissões e tente novamente.'
+      )
       setSalvando(false)
       return
     }
@@ -220,6 +236,21 @@ function Visitas() {
             </div>
 
             <div className="visitas-campo">
+              <label htmlFor="horario_visita">
+                Horário da visita *
+              </label>
+
+              <input
+                id="horario_visita"
+                name="horario_visita"
+                type="time"
+                value={formulario.horario_visita}
+                onChange={atualizarCampo}
+                required
+              />
+            </div>
+
+            <div className="visitas-campo">
               <label htmlFor="local">
                 Local da reunião
               </label>
@@ -292,6 +323,7 @@ function Visitas() {
                   <th>Pessoa acompanhada</th>
                   <th>Responsável</th>
                   <th>Data</th>
+                  <th>Horário</th>
                   <th>Local</th>
                   <th>Observações</th>
                 </tr>
@@ -309,7 +341,11 @@ function Visitas() {
                     </td>
 
                     <td>{formatarData(visita.data_visita)}</td>
+
+                    <td>{formatarHorario(visita.horario_visita)}</td>
+
                     <td>{visita.local || '-'}</td>
+
                     <td>{visita.observacoes || '-'}</td>
                   </tr>
                 ))}
