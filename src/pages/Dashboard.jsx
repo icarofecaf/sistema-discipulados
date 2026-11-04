@@ -4,11 +4,14 @@ import { supabase } from '../services/supabase'
 import Pessoas from './Pessoas'
 import Visitas from './Visitas'
 import Responsaveis from './Responsaveis'
+import Colaboradores from './Colaboradores'
 import Discipulados from './Discipulados'
 import './Dashboard.css'
 
 function Dashboard({ profile }) {
   const [activeMenu, setActiveMenu] = useState('dashboard')
+  const [sidebarRecolhida, setSidebarRecolhida] = useState(false)
+  const [mobileMenuAberto, setMobileMenuAberto] = useState(false)
 
   const [indicadores, setIndicadores] = useState({
     pessoas: 0,
@@ -110,7 +113,10 @@ function Dashboard({ profile }) {
 
     resultados.forEach((resultado, index) => {
       if (resultado.error) {
-        console.error(`Erro ao carregar consulta ${index + 1}:`, resultado.error)
+        console.error(
+          `Erro ao carregar consulta ${index + 1}:`,
+          resultado.error
+        )
       }
     })
 
@@ -157,6 +163,19 @@ function Dashboard({ profile }) {
     }
   }
 
+  function alternarMenu() {
+    if (window.matchMedia('(max-width: 700px)').matches) {
+      setMobileMenuAberto((aberto) => !aberto)
+    } else {
+      setSidebarRecolhida((recolhida) => !recolhida)
+    }
+  }
+
+  function abrirModulo(modulo) {
+    setActiveMenu(modulo)
+    setMobileMenuAberto(false)
+  }
+
   const menu = [
     { id: 'dashboard', label: 'Dashboard', icon: '▦' },
 
@@ -164,6 +183,7 @@ function Dashboard({ profile }) {
       ? [
           { id: 'pessoas', label: 'Pessoas acompanhadas', icon: '♙' },
           { id: 'responsaveis', label: 'Responsáveis', icon: '♧' },
+          { id: 'colaboradores', label: 'Colaboradores', icon: '♙' },
           { id: 'discipulados', label: 'Discipulados', icon: '▤' },
         ]
       : [
@@ -184,12 +204,20 @@ function Dashboard({ profile }) {
     return new Date(`${data}T00:00:00`).toLocaleDateString('pt-BR')
   }
 
-  function abrirModulo(modulo) {
-    setActiveMenu(modulo)
-  }
-
   return (
-    <div className="dashboard-layout">
+    <div
+      className={`dashboard-layout
+        ${sidebarRecolhida ? 'sidebar-recolhida' : ''}
+        ${mobileMenuAberto ? 'mobile-menu-aberto' : ''}`}
+    >
+      {mobileMenuAberto && (
+        <button
+          className="sidebar-overlay"
+          onClick={() => setMobileMenuAberto(false)}
+          aria-label="Fechar menu"
+        />
+      )}
+
       <aside className="sidebar">
         <div className="sidebar-brand">
           <div className="brand-icon">†</div>
@@ -211,10 +239,11 @@ function Dashboard({ profile }) {
               className={`sidebar-link ${
                 activeMenu === item.id ? 'active' : ''
               }`}
-              onClick={() => setActiveMenu(item.id)}
+              onClick={() => abrirModulo(item.id)}
+              title={sidebarRecolhida ? item.label : undefined}
             >
               <span className="menu-icon">{item.icon}</span>
-              {item.label}
+              <span className="menu-label">{item.label}</span>
             </button>
           ))}
         </nav>
@@ -244,9 +273,20 @@ function Dashboard({ profile }) {
 
       <main className="dashboard-main">
         <header className="dashboard-topbar">
-          <div>
-            <h1>{tituloAtual}</h1>
-            <p>Sistema de Acompanhamento de Discipulados</p>
+          <div className="dashboard-topbar-title">
+            <button
+              className="sidebar-toggle"
+              onClick={alternarMenu}
+              title="Expandir ou recolher menu"
+              aria-label="Expandir ou recolher menu"
+            >
+              ☰
+            </button>
+
+            <div>
+              <h1>{tituloAtual}</h1>
+              <p>Sistema de Acompanhamento de Discipulados</p>
+            </div>
           </div>
 
           <div className="topbar-user">
@@ -318,9 +358,7 @@ function Dashboard({ profile }) {
                 </div>
 
                 {loading ? (
-                  <p className="dashboard-empty">
-                    Carregando visitas...
-                  </p>
+                  <p className="dashboard-empty">Carregando visitas...</p>
                 ) : visitasRecentes.length === 0 ? (
                   <p className="dashboard-empty">
                     Nenhuma visita registrada.
@@ -328,12 +366,16 @@ function Dashboard({ profile }) {
                 ) : (
                   <div className="dashboard-recent-list">
                     {visitasRecentes.map((visita) => (
-                      <div className="dashboard-recent-item" key={visita.id}>
+                      <div
+                        className="dashboard-recent-item"
+                        key={visita.id}
+                      >
                         <div className="dashboard-recent-icon">▣</div>
 
                         <div className="dashboard-recent-info">
                           <strong>
-                            {visita.discipulado?.pessoa?.nome || 'Pessoa não informada'}
+                            {visita.discipulado?.pessoa?.nome ||
+                              'Pessoa não informada'}
                           </strong>
 
                           <span>
@@ -433,6 +475,18 @@ function Dashboard({ profile }) {
                       </span>
                       <b>›</b>
                     </button>
+
+                    <button
+                      className="dashboard-shortcut"
+                      onClick={() => abrirModulo('colaboradores')}
+                    >
+                      <span className="shortcut-icon blue">♙</span>
+                      <span>
+                        <strong>Colaboradores</strong>
+                        <small>Consultar e cadastrar colaboradores</small>
+                      </span>
+                      <b>›</b>
+                    </button>
                   </>
                 )}
 
@@ -442,7 +496,9 @@ function Dashboard({ profile }) {
                 >
                   <span className="shortcut-icon green">▤</span>
                   <span>
-                    <strong>{isAdmin ? 'Discipulados' : 'Meus discipulados'}</strong>
+                    <strong>
+                      {isAdmin ? 'Discipulados' : 'Meus discipulados'}
+                    </strong>
                     <small>Consultar acompanhamentos</small>
                   </span>
                   <b>›</b>
@@ -471,6 +527,10 @@ function Dashboard({ profile }) {
             <Responsaveis
               onResponsavelCriado={carregarIndicadores}
             />
+          </section>
+        ) : activeMenu === 'colaboradores' && isAdmin ? (
+          <section className="dashboard-content">
+            <Colaboradores />
           </section>
         ) : activeMenu === 'discipulados' ? (
           <section className="dashboard-content">
