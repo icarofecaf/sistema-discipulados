@@ -1071,4 +1071,174 @@
     height: 36px;
   }
 }
+/* BOTÃO DE ALTERNÂNCIA DE TEMA */
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  min-width: 0;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #dce3ec;
+  border-radius: 9px;
+  background: #f5f7fa;
+  color: #34445a;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.theme-toggle span {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.theme-toggle:hover {
+  background: #eaf0f7;
+  border-color: #c5d4e4;
+}
+
+/* AJUSTES DA BARRA SUPERIOR */
+
+@media (max-width: 700px) {
+  .topbar-actions {
+    gap: 8px;
+  }
+
+  .theme-toggle {
+    min-height: 34px;
+    gap: 5px;
+    padding: 7px 8px;
+    font-size: 10px;
+  }
+
+  .theme-toggle span {
+    font-size: 15px;
+  }
+}
+
+/* CORES DO DASHBOARD NO MODO ESCURO */
+
+:root[data-theme='dark'] .dashboard-layout {
+  background: var(--background);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .dashboard-topbar {
+  background: var(--surface);
+  border-bottom-color: var(--border);
+}
+
+:root[data-theme='dark'] .dashboard-topbar h1,
+:root[data-theme='dark'] .welcome-section h2,
+:root[data-theme='dark'] .indicator-card strong,
+:root[data-theme='dark'] .dashboard-info-card h3,
+:root[data-theme='dark'] .dashboard-panel-header h3,
+:root[data-theme='dark'] .dashboard-summary-item strong,
+:root[data-theme='dark'] .dashboard-recent-info strong,
+:root[data-theme='dark'] .dashboard-shortcut strong {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .dashboard-topbar p,
+:root[data-theme='dark'] .welcome-section p,
+:root[data-theme='dark'] .indicator-card span,
+:root[data-theme='dark'] .indicator-card small,
+:root[data-theme='dark'] .dashboard-info-card p,
+:root[data-theme='dark'] .dashboard-panel-header p,
+:root[data-theme='dark'] .dashboard-recent-info span,
+:root[data-theme='dark'] .dashboard-recent-info small,
+:root[data-theme='dark'] .dashboard-recent-item time,
+:root[data-theme='dark'] .dashboard-summary-item > span:nth-child(2),
+:root[data-theme='dark'] .dashboard-shortcut small,
+:root[data-theme='dark'] .dashboard-empty {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .indicator-card,
+:root[data-theme='dark'] .dashboard-info-card,
+:root[data-theme='dark'] .dashboard-panel,
+:root[data-theme='dark'] .dashboard-shortcut {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+:root[data-theme='dark'] .dashboard-shortcut:hover {
+  background: #24364a;
+  border-color: #52677e;
+}
+
+:root[data-theme='dark'] .dashboard-recent-item,
+:root[data-theme='dark'] .dashboard-summary-item {
+  border-bottom-color: var(--border);
+}
+
+:root[data-theme='dark'] .dashboard-text-button {
+  color: #9dc5ee;
+}
+
+:root[data-theme='dark'] .dashboard-text-button:hover {
+  color: #d5e8fa;
+}
+
+:root[data-theme='dark'] .dashboard-outline-button {
+  background: #202f40;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .dashboard-outline-button:hover {
+  background: #293b50;
+  border-color: #61768e;
+}
+
+:root[data-theme='dark'] .sidebar-toggle {
+  background: #202f40;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .sidebar-toggle:hover {
+  background: #293b50;
+  border-color: #61768e;
+}
+
+:root[data-theme='dark'] .theme-toggle {
+  background: #202f40;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .theme-toggle:hover {
+  background: #293b50;
+  border-color: #61768e;
+}
+
+:root[data-theme='dark'] .user-avatar {
+  background: #344b65;
+  color: #f0f5fb;
+}
+
+/* MANTÉM O MENU LATERAL COM SUA IDENTIDADE VISUAL */
+
+:root[data-theme='dark'] .sidebar {
+  background: #142b49;
+  color: #fff;
+}
+
+:root[data-theme='dark'] .sidebar-link.active {
+  background: #dce8f3;
+  color: #142b49;
+}
 

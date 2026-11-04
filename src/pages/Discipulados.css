@@ -365,3 +365,169 @@
     width: 100%;
   }
 }
+/* =========================================
+   MODO ESCURO - DISCIPULADOS
+========================================= */
+
+/* Estrutura e cabeçalho */
+
+:root[data-theme='dark'] .discipulados-page {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .discipulados-header h2,
+:root[data-theme='dark'] .discipulado-indicator strong,
+:root[data-theme='dark'] .discipulados-list-header h3,
+:root[data-theme='dark'] .discipulados-table td strong {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .discipulados-header p,
+:root[data-theme='dark'] .discipulado-indicator span {
+  color: var(--text-muted);
+}
+
+/* Indicadores */
+
+:root[data-theme='dark'] .discipulado-indicator {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* Listagem */
+
+:root[data-theme='dark'] .discipulados-list-card {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+:root[data-theme='dark'] .discipulados-list-header h3 {
+  color: var(--text);
+}
+
+/* Filtros */
+
+:root[data-theme='dark'] .discipulados-filters input,
+:root[data-theme='dark'] .discipulados-filters select {
+  background: #202f40;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .discipulados-filters input::placeholder {
+  color: #91a1b4;
+}
+
+:root[data-theme='dark'] .discipulados-filters input:focus,
+:root[data-theme='dark'] .discipulados-filters select:focus {
+  border-color: #6c9bc9;
+  box-shadow: 0 0 0 3px rgba(108, 155, 201, 0.12);
+}
+
+/* Tabela */
+
+:root[data-theme='dark'] .discipulados-table th {
+  background: #26384c;
+  color: #c4d1e0;
+}
+
+:root[data-theme='dark'] .discipulados-table td {
+  background: var(--surface);
+  border-bottom-color: var(--border);
+  color: #c6d2e0;
+}
+
+:root[data-theme='dark'] .discipulados-table td strong {
+  color: #edf3fa;
+}
+
+:root[data-theme='dark'] .discipulados-table tbody tr:hover td {
+  background: #24364a;
+}
+
+/* Status */
+
+:root[data-theme='dark'] .status-ativo {
+  background: #174b3b;
+  color: #80e0b4;
+}
+
+:root[data-theme='dark'] .status-encerrado {
+  background: #542d34;
+  color: #ffaaaa;
+}
+
+/* Botão de transferência */
+
+:root[data-theme='dark'] .btn-transferir {
+  background: #315b86;
+  color: #fff;
+}
+
+:root[data-theme='dark'] .btn-transferir:hover {
+  background: #416f9f;
+}
+
+/* Mensagens */
+
+:root[data-theme='dark'] .discipulados-message {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .discipulados-error {
+  background: #542d34;
+  color: #ffaaaa;
+}
+
+:root[data-theme='dark'] .discipulados-error button {
+  background: #315b86;
+  color: #fff;
+}
+
+/* Modal de transferência */
+
+:root[data-theme='dark'] .transferencia-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme='dark'] .transferencia-modal h3 {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .transferencia-modal p {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .transferencia-modal label {
+  color: #d2dce8;
+}
+
+:root[data-theme='dark'] .transferencia-modal select {
+  background: #202f40;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .transferencia-mensagem {
+  color: #ffaaaa !important;
+}
+
+/* Ações do modal */
+
+:root[data-theme='dark'] .transferencia-acoes .btn-cancelar {
+  background: #293b50;
+  color: #d2dce8;
+}
+
+:root[data-theme='dark'] .transferencia-acoes .btn-confirmar-transferencia {
+  background: #315b86;
+  color: #fff;
+}
+
+:root[data-theme='dark'] .transferencia-acoes .btn-confirmar-transferencia:hover {
+  background: #416f9f;
+}

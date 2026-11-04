@@ -665,3 +665,216 @@
     justify-content: space-between;
   }
 }
+/* =========================================
+   MODO ESCURO - COLABORADORES
+========================================= */
+
+/* Estrutura e cabeçalho */
+
+:root[data-theme='dark'] .colaboradores-page {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .colaboradores-header h2,
+:root[data-theme='dark'] .colaboradores-lista-header h3,
+:root[data-theme='dark'] .colaboradores-resumo strong {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .colaboradores-header p,
+:root[data-theme='dark'] .colaboradores-resumo span {
+  color: var(--text-muted);
+}
+
+/* Botões principais */
+
+:root[data-theme='dark'] .btn-novo-colaborador,
+:root[data-theme='dark'] .colaborador-btn-salvar {
+  background: #315b86;
+  color: #fff;
+}
+
+:root[data-theme='dark'] .btn-novo-colaborador:hover,
+:root[data-theme='dark'] .colaborador-btn-salvar:hover {
+  background: #416f9f;
+}
+
+/* Indicadores */
+
+:root[data-theme='dark'] .colaboradores-resumo > div {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* Cartão da listagem */
+
+:root[data-theme='dark'] .colaboradores-lista-card {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+:root[data-theme='dark'] .colaboradores-lista-header h3 {
+  color: var(--text);
+}
+
+/* Filtros */
+
+:root[data-theme='dark'] .colaboradores-filtros input,
+:root[data-theme='dark'] .colaboradores-filtros select,
+:root[data-theme='dark'] .paginacao-configuracao select {
+  background: #202f40;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .colaboradores-filtros input::placeholder {
+  color: #91a1b4;
+}
+
+:root[data-theme='dark'] .colaboradores-filtros input:focus,
+:root[data-theme='dark'] .colaboradores-filtros select:focus {
+  border-color: #6c9bc9;
+  box-shadow: 0 0 0 3px rgba(108, 155, 201, 0.12);
+}
+
+/* Tabela */
+
+:root[data-theme='dark'] .colaboradores-tabela th {
+  background: #26384c;
+  color: #c4d1e0;
+}
+
+:root[data-theme='dark'] .colaboradores-tabela td {
+  background: var(--surface);
+  border-bottom-color: var(--border);
+  color: #c6d2e0;
+}
+
+:root[data-theme='dark'] .colaboradores-tabela td:first-child {
+  color: #edf3fa;
+}
+
+:root[data-theme='dark'] .colaboradores-tabela tbody tr:hover td {
+  background: #24364a;
+}
+
+/* Status */
+
+:root[data-theme='dark'] .colaborador-status.ativo {
+  background: #174b3b;
+  color: #80e0b4;
+}
+
+:root[data-theme='dark'] .colaborador-status.inativo {
+  background: #542d34;
+  color: #ffaaaa;
+}
+
+/* Botões de ação */
+
+:root[data-theme='dark'] .btn-editar-colaborador {
+  background: #294462;
+  border-color: #3c5d7e;
+  color: #d6e8fa;
+}
+
+:root[data-theme='dark'] .btn-editar-colaborador:hover {
+  background: #345777;
+}
+
+:root[data-theme='dark'] .btn-status-colaborador {
+  background: #202f40;
+  border-color: var(--border);
+  color: #c6d2e0;
+}
+
+:root[data-theme='dark'] .btn-status-colaborador:hover {
+  background: #293b50;
+}
+
+/* Mensagens */
+
+:root[data-theme='dark'] .colaboradores-mensagem {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .colaboradores-erro {
+  background: #542d34;
+  color: #ffaaaa;
+}
+
+/* Modal */
+
+:root[data-theme='dark'] .colaborador-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme='dark'] .colaborador-modal-header h3 {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .colaborador-modal-header p {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .colaborador-modal label {
+  color: #d2dce8;
+}
+
+:root[data-theme='dark'] .colaborador-modal input,
+:root[data-theme='dark'] .colaborador-modal select {
+  background: #202f40;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .colaborador-modal-fechar {
+  background: #293b50;
+  color: #d2dce8;
+}
+
+:root[data-theme='dark'] .colaborador-modal-fechar:hover {
+  background: #354b63;
+}
+
+:root[data-theme='dark'] .colaborador-btn-cancelar {
+  background: #293b50;
+  border-color: var(--border);
+  color: #d2dce8;
+}
+
+:root[data-theme='dark'] .colaborador-btn-cancelar:hover {
+  background: #354b63;
+}
+
+/* Paginação */
+
+:root[data-theme='dark'] .colaboradores-paginacao {
+  border-top-color: var(--border);
+}
+
+:root[data-theme='dark'] .paginacao-info,
+:root[data-theme='dark'] .paginacao-configuracao,
+:root[data-theme='dark'] .paginacao-navegacao {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .paginacao-info strong,
+:root[data-theme='dark'] .paginacao-navegacao strong {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .paginacao-navegacao button {
+  background: #202f40;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .paginacao-navegacao button:hover:not(:disabled) {
+  background: #293b50;
+  border-color: #61768e;
+}

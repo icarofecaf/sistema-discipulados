@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react'
 import { supabase } from '../services/supabase'
 import Pessoas from './Pessoas'
@@ -8,7 +7,7 @@ import Colaboradores from './Colaboradores'
 import Discipulados from './Discipulados'
 import './Dashboard.css'
 
-function Dashboard({ profile }) {
+function Dashboard({ profile, theme, onToggleTheme }) {
   const [activeMenu, setActiveMenu] = useState('dashboard')
   const [sidebarRecolhida, setSidebarRecolhida] = useState(false)
   const [mobileMenuAberto, setMobileMenuAberto] = useState(false)
@@ -289,11 +288,26 @@ function Dashboard({ profile }) {
             </div>
           </div>
 
-          <div className="topbar-user">
-            <span>{profile.nome}</span>
+          <div className="topbar-actions">
+            <button
+              type="button"
+              className="theme-toggle"
+              onClick={onToggleTheme}
+              aria-label={`Ativar modo ${theme === 'light' ? 'escuro' : 'claro'}`}
+              aria-pressed={theme === 'dark'}
+            >
+              <span aria-hidden="true">
+                {theme === 'light' ? '◐' : '☼'}
+              </span>
+              {theme === 'light' ? 'Modo escuro' : 'Modo claro'}
+            </button>
 
-            <div className="user-avatar small">
-              {inicialNome}
+            <div className="topbar-user">
+              <span>{profile.nome}</span>
+
+              <div className="user-avatar small">
+                {inicialNome}
+              </div>
             </div>
           </div>
         </header>

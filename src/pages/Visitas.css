@@ -290,3 +290,120 @@
     width: 100%;
   }
 }
+/* =========================================
+   MODO ESCURO - VISITAS
+========================================= */
+
+/* Estrutura e cabeçalho */
+
+:root[data-theme='dark'] .visitas-page {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .visitas-header h2,
+:root[data-theme='dark'] .visitas-resumo strong,
+:root[data-theme='dark'] .visitas-card-header h3 {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .visitas-header p,
+:root[data-theme='dark'] .visitas-resumo span,
+:root[data-theme='dark'] .visitas-card-header p {
+  color: var(--text-muted);
+}
+
+/* Indicadores */
+
+:root[data-theme='dark'] .visitas-resumo > div {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* Cartões do formulário e histórico */
+
+:root[data-theme='dark'] .visitas-form-card,
+:root[data-theme='dark'] .visitas-historico-card {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* Campos do formulário */
+
+:root[data-theme='dark'] .visitas-campo label {
+  color: #d2dce8;
+}
+
+:root[data-theme='dark'] .visitas-campo input,
+:root[data-theme='dark'] .visitas-campo select,
+:root[data-theme='dark'] .visitas-campo textarea {
+  background: #202f40;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .visitas-campo input::placeholder,
+:root[data-theme='dark'] .visitas-campo textarea::placeholder {
+  color: #91a1b4;
+}
+
+:root[data-theme='dark'] .visitas-campo input:focus,
+:root[data-theme='dark'] .visitas-campo select:focus,
+:root[data-theme='dark'] .visitas-campo textarea:focus {
+  border-color: #6c9bc9;
+  box-shadow: 0 0 0 3px rgba(108, 155, 201, 0.12);
+}
+
+/* Ícones dos campos de data e horário */
+
+:root[data-theme='dark'] .visitas-campo input[type='date'],
+:root[data-theme='dark'] .visitas-campo input[type='time'] {
+  color-scheme: dark;
+}
+
+/* Botão de registrar */
+
+:root[data-theme='dark'] .btn-registrar-visita {
+  background: #315b86;
+  color: #fff;
+}
+
+:root[data-theme='dark'] .btn-registrar-visita:hover {
+  background: #416f9f;
+}
+
+/* Mensagens */
+
+:root[data-theme='dark'] .visitas-mensagem {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .visitas-erro {
+  background: #542d34;
+  border-color: #75404a;
+  color: #ffaaaa;
+}
+
+:root[data-theme='dark'] .visitas-sucesso {
+  background: #174b3b;
+  border-color: #28684f;
+  color: #80e0b4;
+}
+
+/* Histórico de visitas */
+
+:root[data-theme='dark'] .visitas-tabela th {
+  background: #26384c;
+  color: #c4d1e0;
+}
+
+:root[data-theme='dark'] .visitas-tabela td {
+  background: var(--surface);
+  border-bottom-color: var(--border);
+  color: #c6d2e0;
+}
+
+:root[data-theme='dark'] .visitas-tabela tbody tr:hover td {
+  background: #24364a;
+}
