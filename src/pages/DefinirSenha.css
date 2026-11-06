@@ -1,0 +1,169 @@
+.definir-senha-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  background: var(--background);
+  color: var(--text);
+}
+
+.definir-senha-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 36px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.definir-senha-logo,
+.definir-senha-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 22px;
+  border-radius: 14px;
+  background: var(--primary);
+  color: var(--background);
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.definir-senha-icon {
+  border-radius: 50%;
+}
+
+.definir-senha-icon.sucesso {
+  background: #e3f4eb;
+  color: #00845a;
+}
+
+.definir-senha-card h1 {
+  margin: 0 0 12px;
+  color: var(--primary);
+  font-size: 23px;
+  text-align: center;
+}
+
+.definir-senha-card > p {
+  margin-bottom: 22px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.definir-senha-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.definir-senha-card label {
+  margin-top: 8px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.definir-senha-card input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+
+.definir-senha-card input:focus {
+  border-color: #315b86;
+  box-shadow: 0 0 0 3px rgba(49, 91, 134, 0.1);
+}
+
+.definir-senha-card input::placeholder {
+  color: var(--text-muted);
+}
+
+.definir-senha-card small {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.definir-senha-botao {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 16px;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #142b49;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.definir-senha-botao:hover {
+  background: #203f65;
+}
+
+.definir-senha-botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.definir-senha-erro {
+  padding: 11px 13px;
+  border: 1px solid #fecdca;
+  border-radius: 8px;
+  background: #fef3f2;
+  color: #b42318;
+  font-size: 12px;
+}
+
+.definir-senha-link {
+  display: block;
+  margin-top: 20px;
+  color: #315b86;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+:root[data-theme='dark'] .definir-senha-icon.sucesso {
+  background: #174b3b;
+  color: #80e0b4;
+}
+
+:root[data-theme='dark'] .definir-senha-botao {
+  background: #315b86;
+}
+
+:root[data-theme='dark'] .definir-senha-botao:hover {
+  background: #416f9f;
+}
+
+:root[data-theme='dark'] .definir-senha-erro {
+  background: #542d34;
+  border-color: #75404a;
+  color: #ffaaaa;
+}
+
+:root[data-theme='dark'] .definir-senha-link {
+  color: #9dc5ee;
+}
+
+@media (max-width: 480px) {
+  .definir-senha-card {
+    padding: 25px 20px;
+  }
+}

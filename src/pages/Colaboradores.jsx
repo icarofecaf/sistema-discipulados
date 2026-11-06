@@ -15,6 +15,7 @@ function Colaboradores() {
   const [carregando, setCarregando] = useState(true)
   const [salvando, setSalvando] = useState(false)
   const [erro, setErro] = useState('')
+  const [mensagem, setMensagem] = useState('')
   const [colaboradorEditando, setColaboradorEditando] = useState(null)
 
   const formularioInicial = {
@@ -23,6 +24,8 @@ function Colaboradores() {
     escolaridade: '',
     data_nascimento: '',
     funcao: '',
+    criarAcesso: false,
+    email: '',
   }
 
   const funcoes = [
@@ -70,19 +73,23 @@ function Colaboradores() {
 
   // ATUALIZAR CAMPOS DO FORMULÁRIO
   function atualizarCampo(e) {
-    const { name, value } = e.target
+    const { name, value, type, checked } = e.target
 
     setFormulario((anterior) => ({
       ...anterior,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     }))
+
+    setErro('')
+    setMensagem('')
   }
 
   // ABRIR CADASTRO
   function abrirCadastro() {
     setColaboradorEditando(null)
-    setFormulario(formularioInicial)
+    setFormulario({ ...formularioInicial })
     setErro('')
+    setMensagem('')
     setModalAberto(true)
   }
 
@@ -91,6 +98,7 @@ function Colaboradores() {
     setColaboradorEditando(colaborador)
 
     setFormulario({
+      ...formularioInicial,
       nome: colaborador.nome || '',
       endereco: colaborador.endereco || '',
       escolaridade:
@@ -102,6 +110,7 @@ function Colaboradores() {
     })
 
     setErro('')
+    setMensagem('')
     setModalAberto(true)
   }
 
@@ -111,6 +120,7 @@ function Colaboradores() {
 
     setSalvando(true)
     setErro('')
+    setMensagem('')
 
     const dados = {
       nome: formulario.nome.trim(),
@@ -121,14 +131,20 @@ function Colaboradores() {
     }
 
     try {
-      let resultado
+      let mensagemFinal = ''
 
       if (colaboradorEditando) {
-        resultado = await supabase
+        // ATUALIZAR COLABORADOR EXISTENTE
+        const { error } = await supabase
           .from('colaboradores')
           .update(dados)
           .eq('id', colaboradorEditando.id)
+
+        if (error) throw error
+
+        mensagemFinal = 'Colaborador atualizado com sucesso!'
       } else {
+        // IDENTIFICAR ADMINISTRADOR LOGADO
         const { data: usuarioData, error: usuarioErro } =
           await supabase.auth.getUser()
 
@@ -136,23 +152,60 @@ function Colaboradores() {
           throw new Error('Não foi possível identificar o usuário logado.')
         }
 
-        resultado = await supabase
-          .from('colaboradores')
-          .insert({
-            ...dados,
-            status: 'ativo',
-            cadastrado_por: usuarioData.user.id,
-          })
+        // CADASTRAR COLABORADOR
+        const { data: novoColaborador, error: erroCadastro } =
+          await supabase
+            .from('colaboradores')
+            .insert({
+              ...dados,
+              status: 'ativo',
+              cadastrado_por: usuarioData.user.id,
+            })
+            .select('id')
+            .single()
+
+        if (erroCadastro) throw erroCadastro
+
+        mensagemFinal = 'Colaborador cadastrado com sucesso!'
+
+        // ENVIAR CONVITE CASO TENHA SIDO SOLICITADO
+        if (formulario.criarAcesso) {
+          const email = formulario.email.trim().toLowerCase()
+
+          const { data: conviteData, error: conviteError } =
+            await supabase.functions.invoke('criar-responsavel', {
+              body: {
+                acao: 'convidar_colaborador',
+                colaborador_id: novoColaborador.id,
+                email,
+              },
+            })
+
+          if (conviteError || conviteData?.erro) {
+            const motivo =
+              conviteData?.erro ||
+              conviteError?.message ||
+              'Não foi possível enviar o convite.'
+
+            console.error('Erro ao enviar convite:', {
+              conviteError,
+              conviteData,
+            })
+
+            mensagemFinal =
+              `Colaborador cadastrado, mas o convite não foi enviado: ${motivo}`
+          } else {
+            mensagemFinal =
+              `Colaborador cadastrado e convite enviado para ${email}.`
+          }
+        }
       }
 
-      if (resultado.error) {
-        throw resultado.error
-      }
-
-      setFormulario(formularioInicial)
+      setFormulario({ ...formularioInicial })
       setColaboradorEditando(null)
       setModalAberto(false)
       setPaginaAtual(1)
+      setMensagem(mensagemFinal)
 
       await carregarColaboradores()
     } catch (error) {
@@ -280,6 +333,12 @@ function Colaboradores() {
           + Novo colaborador
         </button>
       </div>
+
+      {mensagem && (
+        <p className="colaboradores-sucesso">
+          {mensagem}
+        </p>
+      )}
 
       <div className="colaboradores-resumo">
         <div>
@@ -592,6 +651,52 @@ function Colaboradores() {
                   </option>
                 ))}
               </select>
+
+              {!colaboradorEditando && (
+                <div className="colaborador-acesso-section">
+                  <label className="colaborador-acesso-checkbox">
+                    <input
+                      type="checkbox"
+                      name="criarAcesso"
+                      checked={formulario.criarAcesso}
+                      onChange={atualizarCampo}
+                    />
+                    <span>
+                      Também terá acesso como responsável?
+                    </span>
+                  </label>
+
+                  {formulario.criarAcesso && (
+                    <div className="colaborador-email-acesso">
+                      <label htmlFor="colaborador-email">
+                        E-mail para acesso ao sistema *
+                      </label>
+
+                      <input
+                        id="colaborador-email"
+                        name="email"
+                        type="email"
+                        value={formulario.email}
+                        onChange={atualizarCampo}
+                        placeholder="exemplo@email.com"
+                        maxLength={254}
+                        required
+                      />
+
+                      <small>
+                        Enviaremos um convite para esse endereço.
+                        A própria pessoa definirá sua senha.
+                      </small>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {colaboradorEditando?.profile_id && (
+                <p className="colaborador-acesso-info">
+                  Este colaborador já possui acesso ao sistema como responsável.
+                </p>
+              )}
 
               {erro && (
                 <p className="colaboradores-erro">{erro}</p>

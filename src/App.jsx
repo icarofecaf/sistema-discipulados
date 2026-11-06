@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react'
 import { supabase } from './services/supabase'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
+import DefinirSenha from './pages/DefinirSenha'
 import './App.css'
 
 function App() {
   const [session, setSession] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const conviteAtivo =
+    new URLSearchParams(window.location.search).get('convite') === '1'
 
   const [theme, setTheme] = useState(() => {
     try {
@@ -44,6 +48,11 @@ function App() {
 
   useEffect(() => {
     async function loadProfile() {
+      if (conviteAtivo) {
+        setLoading(false)
+        return
+      }
+
       if (!session) {
         setProfile(null)
         setLoading(false)
@@ -69,7 +78,11 @@ function App() {
     }
 
     loadProfile()
-  }, [session])
+  }, [session, conviteAtivo])
+
+  if (conviteAtivo) {
+    return <DefinirSenha />
+  }
 
   if (loading) {
     return <div className="app-loading">Carregando...</div>
