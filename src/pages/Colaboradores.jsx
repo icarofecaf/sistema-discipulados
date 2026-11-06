@@ -16,6 +16,7 @@ function Colaboradores() {
   const [salvando, setSalvando] = useState(false)
   const [erro, setErro] = useState('')
   const [mensagem, setMensagem] = useState('')
+  const [tipoMensagem, setTipoMensagem] = useState('sucesso')
   const [colaboradorEditando, setColaboradorEditando] = useState(null)
 
   const formularioInicial = {
@@ -84,12 +85,75 @@ function Colaboradores() {
     setMensagem('')
   }
 
+  // LIMPAR MENSAGENS
+  function limparMensagens() {
+    setErro('')
+    setMensagem('')
+    setTipoMensagem('sucesso')
+  }
+
+  // ENVIAR CONVITE PARA O COLABORADOR
+  async function enviarConvite(colaboradorId, email) {
+    const emailLimpo = email.trim().toLowerCase()
+
+    const { data: conviteData, error: conviteError } =
+      await supabase.functions.invoke('criar-responsavel', {
+        body: {
+          acao: 'convidar_colaborador',
+          colaborador_id: colaboradorId,
+          email: emailLimpo,
+        },
+      })
+
+    if (conviteError || conviteData?.erro) {
+      let motivo =
+        conviteData?.erro ||
+        conviteError?.message ||
+        'Não foi possível enviar o convite.'
+
+      // TENTAR LER A RESPOSTA REAL DA EDGE FUNCTION
+      if (
+        !conviteData?.erro &&
+        conviteError?.context &&
+        typeof conviteError.context.clone === 'function'
+      ) {
+        try {
+          const resposta = await conviteError.context.clone().json()
+
+          if (resposta?.erro) {
+            motivo = resposta.erro
+          }
+        } catch (erroLeitura) {
+          console.error(
+            'Não foi possível ler o detalhe da resposta:',
+            erroLeitura
+          )
+        }
+      }
+
+      console.error('Erro ao enviar convite:', {
+        conviteError,
+        conviteData,
+        motivo,
+      })
+
+      return {
+        sucesso: false,
+        motivo,
+      }
+    }
+
+    return {
+      sucesso: true,
+      email: emailLimpo,
+    }
+  }
+
   // ABRIR CADASTRO
   function abrirCadastro() {
     setColaboradorEditando(null)
     setFormulario({ ...formularioInicial })
-    setErro('')
-    setMensagem('')
+    limparMensagens()
     setModalAberto(true)
   }
 
@@ -109,8 +173,7 @@ function Colaboradores() {
       funcao: colaborador.funcao || '',
     })
 
-    setErro('')
-    setMensagem('')
+    limparMensagens()
     setModalAberto(true)
   }
 
@@ -119,8 +182,7 @@ function Colaboradores() {
     e.preventDefault()
 
     setSalvando(true)
-    setErro('')
-    setMensagem('')
+    limparMensagens()
 
     const dados = {
       nome: formulario.nome.trim(),
@@ -132,6 +194,7 @@ function Colaboradores() {
 
     try {
       let mensagemFinal = ''
+      let tipoFinal = 'sucesso'
 
       if (colaboradorEditando) {
         // ATUALIZAR COLABORADOR EXISTENTE
@@ -143,13 +206,36 @@ function Colaboradores() {
         if (error) throw error
 
         mensagemFinal = 'Colaborador atualizado com sucesso!'
+
+        // ENVIAR CONVITE PARA COLABORADOR EXISTENTE SEM ACESSO
+        if (
+          formulario.criarAcesso &&
+          !colaboradorEditando.profile_id
+        ) {
+          const resultadoConvite = await enviarConvite(
+            colaboradorEditando.id,
+            formulario.email
+          )
+
+          if (resultadoConvite.sucesso) {
+            mensagemFinal =
+              `Colaborador atualizado e convite enviado para ${resultadoConvite.email}.`
+          } else {
+            mensagemFinal =
+              `Colaborador atualizado, mas o convite não foi enviado: ${resultadoConvite.motivo}`
+
+            tipoFinal = 'erro'
+          }
+        }
       } else {
         // IDENTIFICAR ADMINISTRADOR LOGADO
         const { data: usuarioData, error: usuarioErro } =
           await supabase.auth.getUser()
 
         if (usuarioErro || !usuarioData.user) {
-          throw new Error('Não foi possível identificar o usuário logado.')
+          throw new Error(
+            'Não foi possível identificar o usuário logado.'
+          )
         }
 
         // CADASTRAR COLABORADOR
@@ -170,33 +256,19 @@ function Colaboradores() {
 
         // ENVIAR CONVITE CASO TENHA SIDO SOLICITADO
         if (formulario.criarAcesso) {
-          const email = formulario.email.trim().toLowerCase()
+          const resultadoConvite = await enviarConvite(
+            novoColaborador.id,
+            formulario.email
+          )
 
-          const { data: conviteData, error: conviteError } =
-            await supabase.functions.invoke('criar-responsavel', {
-              body: {
-                acao: 'convidar_colaborador',
-                colaborador_id: novoColaborador.id,
-                email,
-              },
-            })
-
-          if (conviteError || conviteData?.erro) {
-            const motivo =
-              conviteData?.erro ||
-              conviteError?.message ||
-              'Não foi possível enviar o convite.'
-
-            console.error('Erro ao enviar convite:', {
-              conviteError,
-              conviteData,
-            })
-
+          if (resultadoConvite.sucesso) {
             mensagemFinal =
-              `Colaborador cadastrado, mas o convite não foi enviado: ${motivo}`
+              `Colaborador cadastrado e convite enviado para ${resultadoConvite.email}.`
           } else {
             mensagemFinal =
-              `Colaborador cadastrado e convite enviado para ${email}.`
+              `Colaborador cadastrado, mas o convite não foi enviado: ${resultadoConvite.motivo}`
+
+            tipoFinal = 'erro'
           }
         }
       }
@@ -205,7 +277,9 @@ function Colaboradores() {
       setColaboradorEditando(null)
       setModalAberto(false)
       setPaginaAtual(1)
+
       setMensagem(mensagemFinal)
+      setTipoMensagem(tipoFinal)
 
       await carregarColaboradores()
     } catch (error) {
@@ -261,9 +335,9 @@ function Colaboradores() {
     const termo = busca.toLowerCase()
 
     const correspondeBusca =
-      colaborador.nome.toLowerCase().includes(termo) ||
-      colaborador.funcao.toLowerCase().includes(termo) ||
-      colaborador.escolaridade.toLowerCase().includes(termo)
+      (colaborador.nome || '').toLowerCase().includes(termo) ||
+      (colaborador.funcao || '').toLowerCase().includes(termo) ||
+      (colaborador.escolaridade || '').toLowerCase().includes(termo)
 
     const correspondeStatus =
       filtroStatus === 'todos' ||
@@ -335,7 +409,13 @@ function Colaboradores() {
       </div>
 
       {mensagem && (
-        <p className="colaboradores-sucesso">
+        <p
+          className={
+            tipoMensagem === 'erro'
+              ? 'colaboradores-erro'
+              : 'colaboradores-sucesso'
+          }
+        >
           {mensagem}
         </p>
       )}
@@ -652,7 +732,9 @@ function Colaboradores() {
                 ))}
               </select>
 
-              {!colaboradorEditando && (
+              {/* ACESSO DO COLABORADOR */}
+              {(!colaboradorEditando ||
+                !colaboradorEditando.profile_id) && (
                 <div className="colaborador-acesso-section">
                   <label className="colaborador-acesso-checkbox">
                     <input
@@ -661,8 +743,11 @@ function Colaboradores() {
                       checked={formulario.criarAcesso}
                       onChange={atualizarCampo}
                     />
+
                     <span>
-                      Também terá acesso como responsável?
+                      {colaboradorEditando
+                        ? 'Enviar convite de acesso para este colaborador?'
+                        : 'Também terá acesso como responsável?'}
                     </span>
                   </label>
 
