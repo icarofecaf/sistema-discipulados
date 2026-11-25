@@ -1242,3 +1242,375 @@
   color: #142b49;
 }
 
+/* =========================================
+   CADASTRO DE PESSOA PELO RESPONSÁVEL
+========================================= */
+
+.dashboard-welcome-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.dashboard-welcome-row .welcome-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 10px 17px;
+  border: 1px solid #142b49;
+  border-radius: 8px;
+  background: #142b49;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.dashboard-primary-button:hover {
+  background: #203e60;
+  border-color: #203e60;
+}
+
+.dashboard-primary-button:active {
+  transform: translateY(1px);
+}
+
+.dashboard-primary-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.dashboard-primary-button:focus-visible,
+.dashboard-modal-close:focus-visible,
+.dashboard-modal-cancel:focus-visible {
+  outline: 3px solid #8bb8e5;
+  outline-offset: 3px;
+}
+
+/* MENSAGEM DE SUCESSO */
+
+.dashboard-feedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -9px 0 20px;
+  padding: 13px 15px;
+  border: 1px solid;
+  border-radius: 9px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.dashboard-feedback.sucesso {
+  border-color: #b7e1c8;
+  background: #edf8f1;
+  color: #21633e;
+}
+
+.dashboard-feedback button {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 19px;
+  cursor: pointer;
+}
+
+/* FUNDO DO MODAL */
+
+.dashboard-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 30, 48, 0.58);
+  backdrop-filter: blur(2px);
+}
+
+/* MODAL */
+
+.dashboard-modal {
+  width: 100%;
+  max-width: 510px;
+  max-height: calc(100vh - 40px);
+  padding: 27px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #fff;
+  color: #24344d;
+  box-shadow: 0 18px 55px rgba(15, 30, 48, 0.23);
+  animation: dashboard-modal-entrada 0.18s ease-out;
+}
+
+@keyframes dashboard-modal-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.dashboard-modal-header h2 {
+  margin: 0 0 6px;
+  color: #142b49;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.dashboard-modal-header p {
+  margin: 0;
+  color: #8794a4;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.dashboard-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 8px;
+  background: #f1f4f8;
+  color: #526174;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.dashboard-modal-close:hover {
+  background: #e5ebf2;
+}
+
+.dashboard-modal-close:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* FORMULÁRIO */
+
+.dashboard-person-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.dashboard-form-field label {
+  color: #34445a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dashboard-form-field input {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #d5deea;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  color: #24344d;
+  font-family: inherit;
+  font-size: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-form-field input::placeholder {
+  color: #9aa6b3;
+}
+
+.dashboard-form-field input:focus {
+  border-color: #6c96c1;
+  box-shadow: 0 0 0 3px rgba(108, 150, 193, 0.13);
+}
+
+.dashboard-form-field input[aria-invalid="true"] {
+  border-color: #dc2626;
+}
+
+.dashboard-form-field input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.dashboard-field-error {
+  color: #dc2626;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.dashboard-form-error {
+  padding: 11px 13px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* BOTÕES DO MODAL */
+
+.dashboard-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 7px;
+}
+
+.dashboard-modal-cancel {
+  min-height: 40px;
+  padding: 9px 16px;
+  border: 1px solid #d5deea;
+  border-radius: 8px;
+  background: #fff;
+  color: #526174;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dashboard-modal-cancel:hover {
+  background: #f5f7fa;
+}
+
+.dashboard-modal-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* MODO ESCURO */
+
+:root[data-theme='dark'] .dashboard-modal {
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .dashboard-modal-header h2 {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .dashboard-modal-header p,
+:root[data-theme='dark'] .dashboard-form-field label {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .dashboard-modal-close {
+  background: #293b50;
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .dashboard-modal-close:hover {
+  background: #354b63;
+}
+
+:root[data-theme='dark'] .dashboard-form-field input {
+  border-color: var(--border);
+  background: #172536;
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .dashboard-form-field input::placeholder {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .dashboard-form-error {
+  border-color: #773b42;
+  background: #3a242b;
+  color: #fecaca;
+}
+
+:root[data-theme='dark'] .dashboard-modal-cancel {
+  border-color: var(--border);
+  background: #202f40;
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .dashboard-modal-cancel:hover {
+  background: #293b50;
+}
+
+:root[data-theme='dark'] .dashboard-feedback.sucesso {
+  border-color: #315e48;
+  background: #1d3a2c;
+  color: #b9e8ca;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 700px) {
+  .dashboard-welcome-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .dashboard-welcome-row .welcome-section {
+    margin-bottom: 15px;
+  }
+
+  .dashboard-welcome-row .dashboard-primary-button {
+    width: 100%;
+  }
+
+  .dashboard-modal {
+    padding: 21px;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard-modal-overlay {
+    padding: 10px;
+  }
+
+  .dashboard-modal {
+    max-height: calc(100vh - 20px);
+    padding: 18px;
+  }
+
+  .dashboard-modal-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .dashboard-modal-actions button {
+    width: 100%;
+  }
+}
+

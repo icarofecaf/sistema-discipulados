@@ -15,11 +15,11 @@ function Responsaveis({ onResponsavelCriado }) {
   const formularioInicial = {
     nome: '',
     email: '',
-    senha: '',
   }
 
   const [formulario, setFormulario] = useState(formularioInicial)
 
+  // CARREGAR RESPONSÁVEIS
   async function carregarResponsaveis() {
     setCarregando(true)
     setErro('')
@@ -44,6 +44,7 @@ function Responsaveis({ onResponsavelCriado }) {
     carregarResponsaveis()
   }, [])
 
+  // ATUALIZAR CAMPOS DO FORMULÁRIO
   function atualizarCampo(e) {
     const { name, value } = e.target
 
@@ -56,13 +57,24 @@ function Responsaveis({ onResponsavelCriado }) {
     setMensagem('')
   }
 
+  // ABRIR CADASTRO
   function abrirCadastro() {
-    setFormulario(formularioInicial)
+    setFormulario({ ...formularioInicial })
     setErro('')
     setMensagem('')
     setModalAberto(true)
   }
 
+  // FECHAR MODAL
+  function fecharModal() {
+    if (salvando) return
+
+    setModalAberto(false)
+    setFormulario({ ...formularioInicial })
+    setErro('')
+  }
+
+  // ENVIAR CONVITE
   async function salvarResponsavel(e) {
     e.preventDefault()
 
@@ -70,31 +82,60 @@ function Responsaveis({ onResponsavelCriado }) {
     setErro('')
     setMensagem('')
 
+    const nome = formulario.nome.trim()
+    const email = formulario.email.trim().toLowerCase()
+
     try {
+      if (!nome || !email) {
+        throw new Error('Preencha o nome e o e-mail do responsável.')
+      }
+
       const { data, error } = await supabase.functions.invoke(
         'criar-responsavel',
         {
           body: {
-            nome: formulario.nome.trim(),
-            email: formulario.email.trim().toLowerCase(),
-            senha: formulario.senha,
+            acao: 'convidar_responsavel',
+            nome,
+            email,
           },
         }
       )
 
-      if (error) {
-        throw new Error(
-          data?.erro || error.message || 'Não foi possível cadastrar o responsável.'
-        )
+      if (error || data?.erro) {
+        let motivo =
+          data?.erro ||
+          error?.message ||
+          'Não foi possível enviar o convite.'
+
+        // TENTAR OBTER A MENSAGEM REAL DA EDGE FUNCTION
+        if (
+          !data?.erro &&
+          error?.context &&
+          typeof error.context.clone === 'function'
+        ) {
+          try {
+            const resposta = await error.context.clone().json()
+
+            if (resposta?.erro) {
+              motivo = resposta.erro
+            }
+          } catch (erroLeitura) {
+            console.error(
+              'Não foi possível ler o detalhe da resposta:',
+              erroLeitura
+            )
+          }
+        }
+
+        throw new Error(motivo)
       }
 
-      if (data?.erro) {
-        throw new Error(data.erro)
-      }
-
-      setFormulario(formularioInicial)
+      setFormulario({ ...formularioInicial })
       setModalAberto(false)
-      setMensagem('Responsável cadastrado com sucesso!')
+
+      setMensagem(
+        `Responsável cadastrado! O convite foi enviado para ${email}. A pessoa deverá abrir o e-mail e definir sua própria senha.`
+      )
 
       await carregarResponsaveis()
 
@@ -102,13 +143,18 @@ function Responsaveis({ onResponsavelCriado }) {
         await onResponsavelCriado()
       }
     } catch (error) {
-      console.error('Erro ao cadastrar responsável:', error)
-      setErro(error.message || 'Não foi possível cadastrar o responsável.')
+      console.error('Erro ao enviar convite para responsável:', error)
+
+      setErro(
+        error.message ||
+        'Não foi possível enviar o convite. Tente novamente.'
+      )
     } finally {
       setSalvando(false)
     }
   }
 
+  // PESQUISA
   const responsaveisFiltrados = responsaveis.filter((responsavel) => {
     const termo = busca.toLowerCase()
 
@@ -118,6 +164,7 @@ function Responsaveis({ onResponsavelCriado }) {
     )
   })
 
+  // FORMATAR DATA
   function formatarData(data) {
     if (!data) return '-'
 
@@ -126,6 +173,7 @@ function Responsaveis({ onResponsavelCriado }) {
 
   return (
     <section className="responsaveis-page">
+
       <div className="responsaveis-header">
         <div>
           <h2>Responsáveis</h2>
@@ -133,6 +181,7 @@ function Responsaveis({ onResponsavelCriado }) {
         </div>
 
         <button
+          type="button"
           className="btn-novo-responsavel"
           onClick={abrirCadastro}
         >
@@ -141,21 +190,26 @@ function Responsaveis({ onResponsavelCriado }) {
       </div>
 
       {mensagem && (
-        <p className="responsaveis-sucesso">{mensagem}</p>
+        <p className="responsaveis-sucesso">
+          {mensagem}
+        </p>
       )}
 
       {erro && !modalAberto && (
-        <p className="responsaveis-erro">{erro}</p>
+        <p className="responsaveis-erro">
+          {erro}
+        </p>
       )}
 
       <div className="responsaveis-resumo">
         <div>
           <span>Total de responsáveis</span>
-          <strong>{responsaveis.length}</strong>
+          <strong>{carregando ? '...' : responsaveis.length}</strong>
         </div>
       </div>
 
       <div className="responsaveis-lista-card">
+
         <div className="responsaveis-lista-header">
           <h3>Responsáveis cadastrados</h3>
 
@@ -211,9 +265,7 @@ function Responsaveis({ onResponsavelCriado }) {
       {modalAberto && (
         <div
           className="responsavel-modal-overlay"
-          onClick={() => {
-            if (!salvando) setModalAberto(false)
-          }}
+          onClick={fecharModal}
         >
           <div
             className="responsavel-modal"
@@ -222,14 +274,16 @@ function Responsaveis({ onResponsavelCriado }) {
             <div className="responsavel-modal-header">
               <div>
                 <h3>Novo responsável</h3>
-                <p>Preencha os dados para criar o acesso ao sistema.</p>
+                <p>
+                  Preencha os dados para enviar o convite de acesso.
+                </p>
               </div>
 
               <button
                 type="button"
                 className="responsavel-modal-fechar"
                 disabled={salvando}
-                onClick={() => setModalAberto(false)}
+                onClick={fecharModal}
               >
                 ×
               </button>
@@ -247,6 +301,7 @@ function Responsaveis({ onResponsavelCriado }) {
                 onChange={atualizarCampo}
                 placeholder="Digite o nome completo"
                 maxLength={150}
+                autoComplete="name"
                 required
               />
 
@@ -262,30 +317,20 @@ function Responsaveis({ onResponsavelCriado }) {
                 onChange={atualizarCampo}
                 placeholder="exemplo@email.com"
                 maxLength={254}
+                autoComplete="email"
                 required
               />
 
-              <label htmlFor="responsavel-senha">
-                Senha inicial *
-              </label>
-
-              <input
-                id="responsavel-senha"
-                name="senha"
-                type="password"
-                value={formulario.senha}
-                onChange={atualizarCampo}
-                placeholder="Mínimo de 8 caracteres"
-                minLength={8}
-                required
-              />
-
-              <small className="responsavel-aviso">
-                Informe ao responsável os dados de acesso criados.
-              </small>
+              <div className="responsavel-aviso">
+                Enviaremos um convite para o endereço informado.
+                O próprio responsável deverá abrir o e-mail e definir
+                sua senha para acessar o sistema.
+              </div>
 
               {erro && (
-                <p className="responsaveis-erro">{erro}</p>
+                <p className="responsaveis-erro">
+                  {erro}
+                </p>
               )}
 
               <div className="responsavel-modal-acoes">
@@ -293,7 +338,7 @@ function Responsaveis({ onResponsavelCriado }) {
                   type="button"
                   className="responsavel-btn-cancelar"
                   disabled={salvando}
-                  onClick={() => setModalAberto(false)}
+                  onClick={fecharModal}
                 >
                   Cancelar
                 </button>
@@ -303,13 +348,16 @@ function Responsaveis({ onResponsavelCriado }) {
                   className="responsavel-btn-salvar"
                   disabled={salvando}
                 >
-                  {salvando ? 'Cadastrando...' : 'Cadastrar responsável'}
+                  {salvando
+                    ? 'Enviando convite...'
+                    : 'Enviar convite'}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
     </section>
   )
 }

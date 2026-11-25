@@ -3,19 +3,44 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../services/supabase'
 import './Discipulados.css'
 
-function Discipulados() {
+function obterDataAtual() {
+  const hoje = new Date()
+  const ano = hoje.getFullYear()
+  const mes = String(hoje.getMonth() + 1).padStart(2, '0')
+  const dia = String(hoje.getDate()).padStart(2, '0')
+
+  return `${ano}-${mes}-${dia}`
+}
+
+function Discipulados({ filtroInicial = 'todos' }) {
   const [discipulados, setDiscipulados] = useState([])
   const [responsaveis, setResponsaveis] = useState([])
   const [busca, setBusca] = useState('')
-  const [filtro, setFiltro] = useState('todos')
+  const [filtro, setFiltro] = useState(filtroInicial)
   const [loading, setLoading] = useState(true)
   const [erro, setErro] = useState('')
   const [usuarioAdmin, setUsuarioAdmin] = useState(false)
 
+  // TRANSFERÊNCIA
   const [discipuladoSelecionado, setDiscipuladoSelecionado] = useState(null)
   const [novoResponsavel, setNovoResponsavel] = useState('')
   const [transferindo, setTransferindo] = useState(false)
   const [mensagem, setMensagem] = useState('')
+
+  // NOVO DISCIPULADO
+  const [modalNovoDiscipulado, setModalNovoDiscipulado] = useState(false)
+  const [pessoasDisponiveis, setPessoasDisponiveis] = useState([])
+  const [novaPessoaId, setNovaPessoaId] = useState('')
+  const [novoResponsavelId, setNovoResponsavelId] = useState('')
+  const [dataInicio, setDataInicio] = useState(obterDataAtual())
+  const [carregandoOpcoes, setCarregandoOpcoes] = useState(false)
+  const [salvandoNovoDiscipulado, setSalvandoNovoDiscipulado] = useState(false)
+  const [mensagemNovoDiscipulado, setMensagemNovoDiscipulado] = useState('')
+
+  // RECEBER FILTRO INICIAL DO DASHBOARD
+  useEffect(() => {
+    setFiltro(filtroInicial)
+  }, [filtroInicial])
 
   useEffect(() => {
     verificarAdministrador()
@@ -23,7 +48,9 @@ function Discipulados() {
   }, [])
 
   async function verificarAdministrador() {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
 
     if (!user) return
 
@@ -35,7 +62,7 @@ function Discipulados() {
 
     if (!error && data?.perfil === 'admin') {
       setUsuarioAdmin(true)
-      carregarResponsaveis()
+      await carregarResponsaveis()
     }
   }
 
@@ -93,8 +120,147 @@ function Discipulados() {
 
   function formatarData(data) {
     if (!data) return '-'
+
     return new Date(`${data}T00:00:00`).toLocaleDateString('pt-BR')
   }
+
+  // =========================================
+  // NOVO DISCIPULADO
+  // =========================================
+
+  async function carregarPessoasDisponiveis() {
+    setCarregandoOpcoes(true)
+    setMensagemNovoDiscipulado('')
+
+    const [resultadoPessoas, resultadoDiscipulados] = await Promise.all([
+      supabase
+        .from('pessoas_acompanhadas')
+        .select('id, nome')
+        .eq('status', 'ativo')
+        .order('nome', { ascending: true }),
+
+      supabase
+        .from('discipulados')
+        .select('pessoa_id')
+        .eq('status', 'ativo'),
+    ])
+
+    if (resultadoPessoas.error) {
+      console.error('Erro ao carregar pessoas:', resultadoPessoas.error)
+      setPessoasDisponiveis([])
+      setMensagemNovoDiscipulado(
+        'Não foi possível carregar as pessoas disponíveis.'
+      )
+      setCarregandoOpcoes(false)
+      return
+    }
+
+    if (resultadoDiscipulados.error) {
+      console.error(
+        'Erro ao consultar acompanhamentos ativos:',
+        resultadoDiscipulados.error
+      )
+
+      setPessoasDisponiveis([])
+      setMensagemNovoDiscipulado(
+        'Não foi possível verificar os acompanhamentos existentes. Tente novamente.'
+      )
+      setCarregandoOpcoes(false)
+      return
+    }
+
+    const pessoasComDiscipuladoAtivo = new Set(
+      (resultadoDiscipulados.data || []).map((item) => item.pessoa_id)
+    )
+
+    const disponiveis = (resultadoPessoas.data || []).filter(
+      (pessoa) => !pessoasComDiscipuladoAtivo.has(pessoa.id)
+    )
+
+    setPessoasDisponiveis(disponiveis)
+    setCarregandoOpcoes(false)
+  }
+
+  async function abrirNovoDiscipulado() {
+    setNovaPessoaId('')
+    setNovoResponsavelId('')
+    setDataInicio(obterDataAtual())
+    setMensagemNovoDiscipulado('')
+    setModalNovoDiscipulado(true)
+
+    await carregarPessoasDisponiveis()
+  }
+
+  function fecharNovoDiscipulado() {
+    if (salvandoNovoDiscipulado) return
+
+    setModalNovoDiscipulado(false)
+    setNovaPessoaId('')
+    setNovoResponsavelId('')
+    setDataInicio(obterDataAtual())
+    setMensagemNovoDiscipulado('')
+  }
+
+  async function salvarNovoDiscipulado(e) {
+    e.preventDefault()
+
+    if (!novaPessoaId) {
+      setMensagemNovoDiscipulado('Selecione uma pessoa.')
+      return
+    }
+
+    if (!novoResponsavelId) {
+      setMensagemNovoDiscipulado('Selecione um responsável.')
+      return
+    }
+
+    if (!dataInicio) {
+      setMensagemNovoDiscipulado('Informe a data de início.')
+      return
+    }
+
+    setSalvandoNovoDiscipulado(true)
+    setMensagemNovoDiscipulado('')
+
+    const { error } = await supabase
+      .from('discipulados')
+      .insert({
+        pessoa_id: novaPessoaId,
+        responsavel_id: novoResponsavelId,
+        data_inicio: dataInicio,
+        status: 'ativo',
+      })
+
+    if (error) {
+      console.error('Erro ao criar discipulado:', error)
+
+      if (error.code === '23505') {
+        setMensagemNovoDiscipulado(
+          'Essa pessoa já possui um discipulado ativo.'
+        )
+      } else {
+        setMensagemNovoDiscipulado(
+          `Não foi possível criar o discipulado: ${error.message}`
+        )
+      }
+
+      setSalvandoNovoDiscipulado(false)
+      return
+    }
+
+    await carregarDiscipulados()
+
+    setSalvandoNovoDiscipulado(false)
+    setModalNovoDiscipulado(false)
+    setNovaPessoaId('')
+    setNovoResponsavelId('')
+    setDataInicio(obterDataAtual())
+    setMensagemNovoDiscipulado('')
+  }
+
+  // =========================================
+  // TRANSFERÊNCIA
+  // =========================================
 
   function abrirTransferencia(item) {
     setDiscipuladoSelecionado(item)
@@ -126,7 +292,11 @@ function Discipulados() {
     )
 
     const confirmou = window.confirm(
-      `Deseja transferir ${discipuladoSelecionado.pessoa?.nome || 'esta pessoa'} para ${responsavelEscolhido?.nome || responsavelEscolhido?.email}?`
+      `Deseja transferir ${
+        discipuladoSelecionado.pessoa?.nome || 'esta pessoa'
+      } para ${
+        responsavelEscolhido?.nome || responsavelEscolhido?.email
+      }?`
     )
 
     if (!confirmou) return
@@ -136,18 +306,22 @@ function Discipulados() {
 
     const { error } = await supabase.rpc('transferir_discipulado', {
       p_discipulado_id: discipuladoSelecionado.id,
-      p_novo_responsavel_id: novoResponsavel
+      p_novo_responsavel_id: novoResponsavel,
     })
 
     if (error) {
       console.error('Erro ao transferir discipulado:', error)
-      setMensagem(`Não foi possível realizar a transferência: ${error.message}`)
+      setMensagem(
+        `Não foi possível realizar a transferência: ${error.message}`
+      )
       setTransferindo(false)
       return
     }
 
     setMensagem('Transferência realizada com sucesso!')
+
     await carregarDiscipulados()
+
     setTransferindo(false)
 
     setTimeout(() => {
@@ -157,15 +331,21 @@ function Discipulados() {
     }, 1500)
   }
 
+  // =========================================
+  // FILTROS E INDICADORES
+  // =========================================
+
   const discipuladosFiltrados = discipulados.filter((item) => {
     const nomePessoa = item.pessoa?.nome || ''
     const nomeResponsavel = item.responsavel?.nome || ''
     const emailResponsavel = item.responsavel?.email || ''
 
+    const termoBusca = busca.toLowerCase()
+
     const correspondeBusca =
-      nomePessoa.toLowerCase().includes(busca.toLowerCase()) ||
-      nomeResponsavel.toLowerCase().includes(busca.toLowerCase()) ||
-      emailResponsavel.toLowerCase().includes(busca.toLowerCase())
+      nomePessoa.toLowerCase().includes(termoBusca) ||
+      nomeResponsavel.toLowerCase().includes(termoBusca) ||
+      emailResponsavel.toLowerCase().includes(termoBusca)
 
     const correspondeFiltro =
       filtro === 'todos' || item.status === filtro
@@ -181,6 +361,10 @@ function Discipulados() {
     (item) => item.status === 'encerrado'
   ).length
 
+  // =========================================
+  // INTERFACE
+  // =========================================
+
   return (
     <div className="discipulados-page">
       <div className="discipulados-header">
@@ -190,6 +374,15 @@ function Discipulados() {
             Consulte os acompanhamentos e seus respectivos responsáveis.
           </p>
         </div>
+
+        {usuarioAdmin && (
+          <button
+            className="btn-transferir"
+            onClick={abrirNovoDiscipulado}
+          >
+            + Novo discipulado
+          </button>
+        )}
       </div>
 
       <div className="discipulados-indicators">
@@ -235,6 +428,7 @@ function Discipulados() {
         {erro && (
           <div className="discipulados-error">
             {erro}
+
             <button onClick={carregarDiscipulados}>
               Tentar novamente
             </button>
@@ -268,7 +462,9 @@ function Discipulados() {
                 {discipuladosFiltrados.map((item) => (
                   <tr key={item.id}>
                     <td>
-                      <strong>{item.pessoa?.nome || 'Não informado'}</strong>
+                      <strong>
+                        {item.pessoa?.nome || 'Não informado'}
+                      </strong>
                     </td>
 
                     <td>
@@ -313,13 +509,141 @@ function Discipulados() {
         )}
       </div>
 
+      {/* MODAL DE NOVO DISCIPULADO */}
+      {modalNovoDiscipulado && (
+        <div className="transferencia-overlay">
+          <div className="transferencia-modal">
+            <h3>Novo discipulado</h3>
+
+            <p>
+              Selecione a pessoa, o responsável e a data de início do
+              acompanhamento.
+            </p>
+
+            {carregandoOpcoes ? (
+              <p className="discipulados-message">
+                Carregando opções...
+              </p>
+            ) : (
+              <form onSubmit={salvarNovoDiscipulado}>
+                <label htmlFor="nova-pessoa">
+                  Pessoa acompanhada
+                </label>
+
+                <select
+                  id="nova-pessoa"
+                  value={novaPessoaId}
+                  onChange={(e) => setNovaPessoaId(e.target.value)}
+                  disabled={salvandoNovoDiscipulado}
+                  required
+                >
+                  <option value="">Selecione uma pessoa</option>
+
+                  {pessoasDisponiveis.map((pessoa) => (
+                    <option key={pessoa.id} value={pessoa.id}>
+                      {pessoa.nome}
+                    </option>
+                  ))}
+                </select>
+
+                {pessoasDisponiveis.length === 0 &&
+                  !mensagemNovoDiscipulado && (
+                    <p className="transferencia-mensagem">
+                      Não existem pessoas ativas disponíveis para iniciar
+                      um novo discipulado.
+                    </p>
+                  )}
+
+                <label htmlFor="novo-responsavel-discipulado">
+                  Responsável
+                </label>
+
+                <select
+                  id="novo-responsavel-discipulado"
+                  value={novoResponsavelId}
+                  onChange={(e) => setNovoResponsavelId(e.target.value)}
+                  disabled={salvandoNovoDiscipulado}
+                  required
+                >
+                  <option value="">Selecione um responsável</option>
+
+                  {responsaveis.map((responsavel) => (
+                    <option key={responsavel.id} value={responsavel.id}>
+                      {responsavel.nome || responsavel.email}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor="data-inicio-discipulado">
+                  Data de início
+                </label>
+
+                <input
+                  id="data-inicio-discipulado"
+                  type="date"
+                  value={dataInicio}
+                  onChange={(e) => setDataInicio(e.target.value)}
+                  disabled={salvandoNovoDiscipulado}
+                  required
+                />
+
+                {mensagemNovoDiscipulado && (
+                  <p className="transferencia-mensagem">
+                    {mensagemNovoDiscipulado}
+                  </p>
+                )}
+
+                <div className="transferencia-acoes">
+                  <button
+                    type="button"
+                    className="btn-cancelar"
+                    onClick={fecharNovoDiscipulado}
+                    disabled={salvandoNovoDiscipulado}
+                  >
+                    Cancelar
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="btn-confirmar-transferencia"
+                    disabled={
+                      salvandoNovoDiscipulado ||
+                      pessoasDisponiveis.length === 0 ||
+                      responsaveis.length === 0
+                    }
+                  >
+                    {salvandoNovoDiscipulado
+                      ? 'Salvando...'
+                      : 'Criar discipulado'}
+                  </button>
+                </div>
+              </form>
+            )}
+            {!carregandoOpcoes && (
+              <div className="transferencia-acoes">
+                <button
+                  type="button"
+                  className="btn-cancelar"
+                  onClick={fecharNovoDiscipulado}
+                  disabled={salvandoNovoDiscipulado}
+                >
+                  Fechar
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE TRANSFERÊNCIA */}
       {discipuladoSelecionado && (
         <div className="transferencia-overlay">
           <div className="transferencia-modal">
             <h3>Transferir discipulado</h3>
 
             <p>
-              Pessoa: <strong>{discipuladoSelecionado.pessoa?.nome}</strong>
+              Pessoa:{' '}
+              <strong>{discipuladoSelecionado.pessoa?.nome}</strong>
             </p>
 
             <p>
@@ -343,7 +667,9 @@ function Discipulados() {
               <option value="">Selecione um responsável</option>
 
               {responsaveis
-                .filter((item) => item.id !== discipuladoSelecionado.responsavel_id)
+                .filter(
+                  (item) => item.id !== discipuladoSelecionado.responsavel_id
+                )
                 .map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.nome || item.email} ({item.email})
@@ -371,7 +697,9 @@ function Discipulados() {
                 onClick={confirmarTransferencia}
                 disabled={transferindo || !novoResponsavel}
               >
-                {transferindo ? 'Transferindo...' : 'Confirmar transferência'}
+                {transferindo
+                  ? 'Transferindo...'
+                  : 'Confirmar transferência'}
               </button>
             </div>
           </div>

@@ -1,3 +1,4 @@
+
 .definir-senha-container {
   display: flex;
   align-items: center;
@@ -70,25 +71,70 @@
   font-weight: 600;
 }
 
-.definir-senha-card input {
+/* CAMPOS DE SENHA */
+
+.definir-senha-campo {
+  position: relative;
+  width: 100%;
+}
+
+.definir-senha-card .definir-senha-campo input {
   width: 100%;
   min-height: 44px;
-  padding: 10px 12px;
+  padding: 10px 48px 10px 12px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--background);
   color: var(--text);
   font-size: 13px;
   outline: none;
+  box-sizing: border-box;
 }
 
-.definir-senha-card input:focus {
+.definir-senha-card .definir-senha-campo input:focus {
   border-color: #315b86;
   box-shadow: 0 0 0 3px rgba(49, 91, 134, 0.1);
 }
 
 .definir-senha-card input::placeholder {
   color: var(--text-muted);
+}
+
+/* BOTÃO MOSTRAR/OCULTAR SENHA */
+
+.definir-senha-card .definir-senha-toggle {
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 7px;
+  margin: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.definir-senha-card .definir-senha-toggle:hover {
+  background: rgba(100, 116, 139, 0.1);
+  color: var(--primary);
+}
+
+.definir-senha-card .definir-senha-toggle:focus-visible {
+  outline: 2px solid #315b86;
+  outline-offset: 2px;
+}
+
+.definir-senha-toggle svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .definir-senha-card small {
@@ -139,6 +185,8 @@
   text-align: center;
 }
 
+/* MODO ESCURO */
+
 :root[data-theme='dark'] .definir-senha-icon.sucesso {
   background: #174b3b;
   color: #80e0b4;
@@ -152,6 +200,15 @@
   background: #416f9f;
 }
 
+:root[data-theme='dark'] .definir-senha-card .definir-senha-toggle {
+  color: #aebdce;
+}
+
+:root[data-theme='dark'] .definir-senha-card .definir-senha-toggle:hover {
+  background: #293b50;
+  color: #fff;
+}
+
 :root[data-theme='dark'] .definir-senha-erro {
   background: #542d34;
   border-color: #75404a;
@@ -162,8 +219,70 @@
   color: #9dc5ee;
 }
 
+/* RESPONSIVIDADE */
+
 @media (max-width: 480px) {
   .definir-senha-card {
     padding: 25px 20px;
   }
+}
+/* =========================================
+   MELHORIAS DOS INDICADORES DO DASHBOARD
+========================================= */
+
+/* Indicadores clicáveis */
+
+.indicator-card-button {
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+}
+
+.indicator-card-button:focus-visible {
+  outline: 3px solid #6c9bc9;
+  outline-offset: 3px;
+}
+
+.indicator-card-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Itens clicáveis do resumo */
+
+.dashboard-summary-action {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #edf0f4;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, padding 0.2s;
+}
+
+.dashboard-summary-action:hover {
+  padding-left: 6px;
+  background: #f5f7fa;
+}
+
+.dashboard-summary-action:focus-visible {
+  outline: 2px solid #315b86;
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+
+/* MODO ESCURO */
+
+:root[data-theme='dark'] .dashboard-summary-action {
+  border-bottom-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .dashboard-summary-action:hover {
+  background: #24364a;
 }

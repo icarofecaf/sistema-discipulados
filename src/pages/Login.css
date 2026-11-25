@@ -67,7 +67,59 @@
   border-color: #244a73;
 }
 
-.login-card button {
+/* CAMPO DE SENHA */
+
+.login-senha-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.login-senha-wrapper input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 48px;
+}
+
+/* BOTÃO MOSTRAR/OCULTAR SENHA */
+
+.login-card .login-senha-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 7px;
+  margin: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.login-card .login-senha-toggle:hover {
+  background: #f1f5f9;
+  color: #142b49;
+}
+
+.login-card .login-senha-toggle:focus-visible {
+  outline: 2px solid #244a73;
+  outline-offset: 2px;
+}
+
+.login-senha-toggle svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* BOTÃO ENTRAR */
+
+.login-card form > button[type="submit"] {
   background: #142b49;
   color: white;
   border: none;
@@ -78,11 +130,11 @@
   margin-top: 10px;
 }
 
-.login-card button:hover {
+.login-card form > button[type="submit"]:hover {
   background: #244a73;
 }
 
-.login-card button:disabled {
+.login-card form > button[type="submit"]:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -97,4 +149,51 @@
   color: #94a3b8;
   font-size: 11px;
   margin-top: 30px;
+}
+
+/* MODO ESCURO */
+
+:root[data-theme='dark'] .login-container {
+  background: var(--background);
+}
+
+:root[data-theme='dark'] .login-card {
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+:root[data-theme='dark'] .login-card h1 {
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .login-subtitle,
+:root[data-theme='dark'] .login-card label {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .login-card input {
+  background: #202f40;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .login-card input::placeholder {
+  color: #91a1b4;
+}
+
+:root[data-theme='dark'] .login-card .login-senha-toggle {
+  color: #aebdce;
+}
+
+:root[data-theme='dark'] .login-card .login-senha-toggle:hover {
+  background: #293b50;
+  color: #ffffff;
+}
+
+:root[data-theme='dark'] .login-card footer {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .login-error {
+  color: #ffaaaa;
 }

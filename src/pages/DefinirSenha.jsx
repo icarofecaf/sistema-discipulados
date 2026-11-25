@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react'
 import { supabase } from '../services/supabase'
 import './DefinirSenha.css'
@@ -7,6 +8,8 @@ function DefinirSenha() {
   const [sessaoValida, setSessaoValida] = useState(false)
   const [senha, setSenha] = useState('')
   const [confirmacao, setConfirmacao] = useState('')
+  const [senhaVisivel, setSenhaVisivel] = useState(false)
+  const [confirmacaoVisivel, setConfirmacaoVisivel] = useState(false)
   const [salvando, setSalvando] = useState(false)
   const [erro, setErro] = useState('')
   const [concluido, setConcluido] = useState(false)
@@ -163,31 +166,119 @@ function DefinirSenha() {
             Nova senha
           </label>
 
-          <input
-            id="nova-senha"
-            type="password"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            placeholder="Digite sua nova senha"
-            autoComplete="new-password"
-            minLength={8}
-            required
-          />
+          <div className="definir-senha-campo">
+            <input
+              id="nova-senha"
+              type={senhaVisivel ? 'text' : 'password'}
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              placeholder="Digite sua nova senha"
+              autoComplete="new-password"
+              minLength={8}
+              required
+            />
+
+            <button
+              type="button"
+              className="definir-senha-toggle"
+              onClick={() => setSenhaVisivel((visivel) => !visivel)}
+              aria-label={senhaVisivel ? 'Ocultar senha' : 'Mostrar senha'}
+              aria-pressed={senhaVisivel}
+              title={senhaVisivel ? 'Ocultar senha' : 'Mostrar senha'}
+            >
+              {senhaVisivel ? (
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3 3l18 18" />
+                  <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+                  <path d="M9.9 5.2A11.4 11.4 0 0 1 12 5c5.5 0 9 7 9 7a14.5 14.5 0 0 1-3.1 3.9" />
+                  <path d="M6.2 6.2C3.9 7.8 3 12 3 12s3.5 7 9 7c1.5 0 2.8-.5 4-1.2" />
+                </svg>
+              ) : (
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </button>
+          </div>
 
           <label htmlFor="confirmar-senha">
             Confirmar nova senha
           </label>
 
-          <input
-            id="confirmar-senha"
-            type="password"
-            value={confirmacao}
-            onChange={(e) => setConfirmacao(e.target.value)}
-            placeholder="Digite novamente sua senha"
-            autoComplete="new-password"
-            minLength={8}
-            required
-          />
+          <div className="definir-senha-campo">
+            <input
+              id="confirmar-senha"
+              type={confirmacaoVisivel ? 'text' : 'password'}
+              value={confirmacao}
+              onChange={(e) => setConfirmacao(e.target.value)}
+              placeholder="Digite novamente sua senha"
+              autoComplete="new-password"
+              minLength={8}
+              required
+            />
+
+            <button
+              type="button"
+              className="definir-senha-toggle"
+              onClick={() =>
+                setConfirmacaoVisivel((visivel) => !visivel)
+              }
+              aria-label={
+                confirmacaoVisivel ? 'Ocultar senha' : 'Mostrar senha'
+              }
+              aria-pressed={confirmacaoVisivel}
+              title={
+                confirmacaoVisivel ? 'Ocultar senha' : 'Mostrar senha'
+              }
+            >
+              {confirmacaoVisivel ? (
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3 3l18 18" />
+                  <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+                  <path d="M9.9 5.2A11.4 11.4 0 0 1 12 5c5.5 0 9 7 9 7a14.5 14.5 0 0 1-3.1 3.9" />
+                  <path d="M6.2 6.2C3.9 7.8 3 12 3 12s3.5 7 9 7c1.5 0 2.8-.5 4-1.2" />
+                </svg>
+              ) : (
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </button>
+          </div>
 
           <small>
             A senha precisa ter pelo menos 8 caracteres.
